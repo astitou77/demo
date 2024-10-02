@@ -1,0 +1,42 @@
+pipeline {
+    agent any
+
+    stages {
+        
+        stage('1/5 REPOSITORY') {
+            steps {
+                echo 'Pulling Github source code FROM astit77...'
+            }
+        }
+        
+        stage('2/5 BUILD') {
+            steps {
+                echo 'MAVEN Building the *.war file package from source code...'
+            }
+        }
+        
+        stage('3/5 TESTS') {
+            steps {
+                echo 'MAVEN Building the *.war file package from source code...'
+            }
+        }
+        
+        stage('4/5 DEPLOY') {
+            steps {
+                echo 'Sending Email notification'
+                echo 'installing new package to tomcat site...'
+            }
+        }
+        
+        stage('5/5 ARTIFACTORY') {
+            steps {
+                echo 'Storing latest package version to the JFrog Artifactory...'
+
+            }
+        }
+        
+        
+    }
+    
+}
+

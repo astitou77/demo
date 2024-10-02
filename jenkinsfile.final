@@ -1,0 +1,66 @@
+pipeline {
+    agent any
+
+    environment {
+        ARTIFACTORY_URL = 'http://localhost:8082'
+        TOMCAT_URL = 'https://localhost:8089/demo'
+        GIT_REPO = 'git@github.com:astitou77/DevSecOps.git'
+        MAVEN_CLI_OPTS = '--batch-mode --errors'
+        // ARTIFACTORY_USERNAME = credentials('artifactory-creds')
+        // ARTIFACTORY_PASSWORD = credentials('artifactory-creds')
+    }
+
+    stages {
+        stage('1/5 Checkout') {
+            steps {
+                echo 'Hello World of Jenkins From github@github.com !'
+                git 'https://github.com/astitou77/DevSecOps.git'
+            }
+        }
+
+        stage('2/5 Build') {
+            steps {
+                echo 'Building the {demo} project app ! 222222'
+                sh 'mvn clean package -f "./demo/pom.xml"'
+            }
+        }
+
+        stage('3/5 JUnit Tests') {
+            steps {
+                echo 'Testing the new build...'
+            }
+        }
+
+        stage('4/5 Upload to Artifactory') {
+            steps {
+                script{
+                    withCredentials([usernamePassword(credentialsId: 'artifactory-creds', 
+                                                    usernameVariable: 'ARTIFACTORY_USERNAME', 
+                                                    passwordVariable: 'ARTIFACTORY_PASSWORD')]) {
+                    echo 'Archiving Build to Artifactory...'
+                    echo "Using Artifactory username: ${ARTIFACTORY_USERNAME}"
+                    echo "Using Artifactory password: ${ARTIFACTORY_PASSWORD}"
+                    sh 'mvn deploy -s ./demo/settings.xml -f ./demo/pom.xml'
+                    }
+                }
+            }
+        }
+
+        stage('5/5 Deploy to tomcat') {
+            steps {
+                script{
+                    withCredentials([usernamePassword(credentialsId: 'tomcat-creds', 
+                                                    usernameVariable: 'TOMCAT_USERNAME', 
+                                                    passwordVariable: 'TOMCAT_PASSWORD')]) {
+                    echo 'Deploying to tomcat...'
+                    sh 'mvn install tomcat7:deploy -s ./demo/settings.xml -f ./demo/pom.xml'
+                    // podman cp ./demo/target/demo.war sad_shannon:/usr/local/tomcat/webapps
+                    // podman restart sad_shannon
+                    }
+                }
+            }
+        }
+
+    
+    }
+}
