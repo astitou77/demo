@@ -13,7 +13,7 @@ pipeline {
         stage('2/5 BUILD') {
             steps {
                 echo 'MAVEN Building the *.war file package from source code...'
-                sh 'mvn clean package'
+                sh 'mvn clean package -f "./pom.xml"'
             }
         }
         
