@@ -6,18 +6,21 @@ pipeline {
         stage('1/5 REPOSITORY') {
             steps {
                 echo 'Pulling Github source code FROM astit77...'
+                git 'https://github.com/astitou77/demo.git'
             }
         }
         
         stage('2/5 BUILD') {
             steps {
                 echo 'MAVEN Building the *.war file package from source code...'
+                sh 'mvn clean package'
             }
         }
         
         stage('3/5 TESTS') {
             steps {
                 echo 'MAVEN Building the *.war file package from source code...'
+                sh 'mvn test'
             }
         }
         
