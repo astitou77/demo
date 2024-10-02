@@ -6,7 +6,24 @@ pipeline {
         stage('1/5 REPOSITORY') {
             steps {
                 echo 'Pulling Github source code FROM astit77...'
-                git 'https://github.com/astitou77/demo.git'
+                // git 'https://github.com/astitou77/demo.git'
+
+
+                script {
+                    // Define the repository URL
+                    def repoUrl = 'git@github.com:astitou77/demo.git'
+
+                    // Checkout the main branch using the stored SSH credentials
+                    checkout([$class: 'git',
+                              userRemoteConfigs: [[
+                                  url: repoUrl,
+                                  credentialsId: 'root'
+                              ]],
+                              branches: [[name: '*/main']]
+                    ])
+                }
+
+
             }
         }
         
